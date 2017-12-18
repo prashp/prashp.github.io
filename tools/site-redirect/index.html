@@ -1,0 +1,48 @@
+<html>
+<head>
+<script   src="https://code.jquery.com/jquery-3.0.0.min.js"   integrity="sha256-JmvOoLtYsmqlsWxa7mDSLMwa6dZ9rrIdtrrVYRnDRH0="   crossorigin="anonymous"></script>
+
+<script type="text/javascript">
+
+
+function getQueryVariable(variable) {
+    var query = window.location.search.substring(1);
+    var vars = query.split('&');
+    for (var i = 0; i < vars.length; i++) {
+        var pair = vars[i].split('=');
+        if (decodeURIComponent(pair[0]) == variable) {
+            var value = decodeURIComponent(pair[1]);
+            console.log('[SITE_REDIRECT] Found param name: [%s] value: [%s]', variable, value);
+            return value;
+        }
+    }
+    console.log('[SITE_REDIRECT] Query variable %s NOT found', variable);
+}
+
+$(document).ready(function(){
+    if(window.location.search) {
+        var state = window.atob(getQueryVariable('state'));
+        console.log('[SITE_REDIRECT] state=' + state);
+        if (state) {
+            var state = JSON.parse(state);
+            if (state.redirect_uri) {
+                redirect = decodeURIComponent(state.redirect_uri);
+                console.log('[SITE_REDIRECT] redirect_uri=' + redirect);
+                console.log('[SITE_REDIRECT] redirecting to: ' + redirect + window.location.search);
+                window.location = redirect + window.location.search;
+            } else {
+                console.log('[SITE_REDIRECT] No redirect URI found');
+            }
+        } else {
+            console.log('[SITE_REDIRECT] No state found');
+        }
+    } else {
+        console.log('[SITE_REDIRECT] Missing query params');
+    }
+})
+</script>
+</head>
+<body>
+Redirect CI requests...
+</body>
+</html>
